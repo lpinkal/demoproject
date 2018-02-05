@@ -2,6 +2,12 @@
   "name": "angpage",
   "version": "0.0.0",
   "license": "MIT",
+  "main": "server/server.js",
+  "postinstall":"ng build --aot -prod",
+  "engines": {
+    "node":"~9.3.0",
+    "npm":"5.5.1"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -12,6 +18,8 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/cli": "1.6.4",
+    "@angular/compiler-cli": "^5.1.0",
     "@angular-devkit/core": "^0.2.0",
     "@angular/animations": "^5.1.0",
     "@angular/common": "^5.1.0",
