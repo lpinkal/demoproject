@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "license": "MIT",
   "main": "server/server.js",
-  "postinstall":"ng build --aot -prod",
   "engines": {
     "node":"~9.3.0",
     "npm":"5.5.1"
   },
   "scripts": {
     "ng": "ng",
+    "postinstall":"ng build --aot -prod",
     "start": "node server/server.js",
     "build": "ng build --prod",
     "test": "ng test",

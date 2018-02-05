@@ -150,6 +150,19 @@ res.json({"msg":'sucess'})
 
 });
 
+app.post('/delete',(req,res)=>{
+  console.log(req.body.user);
+
+  Userdata.findOneAndRemove({email:req.body.user}).then((res)=>{
+
+  },()=>{
+
+  });
+
+
+  res.send(req.body);
+})
+
 app.listen(environment.port,()=>{
   console.log('app started on port '+environment.port)
 });

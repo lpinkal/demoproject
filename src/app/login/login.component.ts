@@ -11,7 +11,7 @@ import {AuthService} from "../auth.service";
 })
 export class LoginComponent implements OnInit {
   @Output() session:string;
-  constructor(private serverservice:ServerService,private router:Router,private authservice:AuthService) { }
+  constructor(private serverservice:ServerService,private router:Router,private authservice:AuthService,private auth:AuthService) { }
 
   ngOnInit() {
   }
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
         // console.log(JSON.parse(response._body).message);
         // let res = JSON.parse(response._body).message;
       console.log(res);
-        if (res) {
+        if (this.auth.loggedin) {
           this.session=f.value.username;
           console.log('session'+this.session);
           this.router.navigate(['profile']);

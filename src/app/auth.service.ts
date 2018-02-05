@@ -18,9 +18,11 @@ export class AuthService{
     return this.serverservic.login(body).map(
       res=>{
         console.log(res);
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('user',res.user);
-        this.loggedin=true;
+        if(res.token) {
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('user', res.user);
+          this.loggedin = true;
+        }
         return res;
       },
     );
