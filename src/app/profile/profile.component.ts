@@ -59,7 +59,9 @@ export class ProfileComponent implements OnInit {
 
   delete(){
 
-    this.serverservice.delete(this.user);
+    this.serverservice.delete(this.user).subscribe((res:any)=>{
+      console.log(res);
+    });
 
   }
 

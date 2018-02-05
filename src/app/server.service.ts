@@ -62,6 +62,10 @@ export class ServerService {
     );
   }
   delete(user){
-
+        return this.http.post(environment.baseURL+'delete',{user:user}).map(
+          (res:any)=>{
+            return res;
+          }
+        )
   }
 }
