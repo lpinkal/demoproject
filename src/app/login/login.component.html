@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+      <form (ngSubmit)="onlogin(f)" #f="ngForm">
+        <div class="form-group">
+        <label>Email:</label>
+        <input class="form-control" type="text" name="username" ngModel required email>
+        </div>
+        <div class="form-group">
+        <label>Password:</label>
+        <input class="form-control" type="text" name="password" ngModel required>
+        </div>
+
+        <div class="form-group">
+        <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
+        <button class="btn btn-primary" type="button" (click)="googlelogin1(f)">google</button>
+        </div>
+      </form>
+
+      <div role="presentation" routerLinkActive="active" ><a routerLink="/registration">Registration</a></div>
+    </div>
+    <div class="col-sm-3"></div>
+  </div>
+</div>
+

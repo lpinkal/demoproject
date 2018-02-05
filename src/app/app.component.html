@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="row">
+  <div class="col-12">
+  <ul class="navbar  bg-light nav-tabs ">
+    <li role="presentation" routerLinkActive="active" *ngIf="!auth.loggedin"><a routerLink="registration" >registration</a></li>
+    <li role="presentation" routerLinkActive="active" *ngIf="auth.loggedin"><a routerLink="profile">profile</a></li>
+    <li role="presentation" routerLinkActive="active" *ngIf="!auth.loggedin"><a routerLink="login">login</a></li>
+    <li role="presentation" routerLinkActive="active" *ngIf="auth.loggedin"><a routerLink="logout" >logout</a></li>
+    <li role="presentation" routerLinkActive="active">
+      <select id="sel1">
+        <option routerLink="#">1</option>
+        <option routerLink="#">2</option>
+        <option routerLink="#">3</option>
+        <option routerLink="#">4</option>
+      </select>
+    </li>
+    </ul>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
