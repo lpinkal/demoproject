@@ -27,6 +27,7 @@
         </div><br>
         <button type="submit" [disabled]="!f.valid" class="btn btn-info" (click)="onsave(f)">submit</button>
       </form>
+      <div class="label-danger" *ngIf="!log">registration failed</div>
       <div role="presentation" routerLinkActive="active" ><a routerLink="/login">Login</a></div>
     </div>
     <div class="col-sm-3"></div>

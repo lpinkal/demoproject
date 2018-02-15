@@ -6,33 +6,60 @@ import {Router} from "@angular/router";
 export class AuthService{
   loggedin=false;
   constructor(private serverservic:ServerService,private router:Router){
-    const token = localStorage.getItem('token');
-    if (token) {
+    const user = localStorage.getItem('user');
+    if (user) {
       console.log('auth');
       this.loggedin=true;
     }
+  }
+
+  isauthenticated(){
+    let promise=new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        resolve(this.loggedin);
+      },800);
+    });
+    return promise;
   }
 
 
   login(body){
     return this.serverservic.login(body).map(
       res=>{
-        console.log(res);
-        if(res.token) {
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('user', res.user);
+        let b=res.headers._headers.get('acesstoken');
+        console.log(b[0]);
+        let x=res.json();
+        if(x.user) {
+          localStorage.setItem('user', x.user);
+          localStorage.setItem('acesstoken',b[0]);
           this.loggedin = true;
         }
-        return res;
       },
     );
   }
 
   logout(){
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.loggedin=false;
-    this.router.navigate(['/home']);
+    // return this.serverservic.logout().map(res=>{
+    //   console.log(res);
+      localStorage.removeItem('user');
+      localStorage.removeItem('acesstoken');
+      this.loggedin=false;
+      this.router.navigate(['/home']);
+    //   return res;
+    // });
+  }
+
+  storedata(body){
+    return this.serverservic.storedata(body).map((res:any)=>{
+      let b=res.headers._headers.get('acesstoken');
+      let x=res.json();
+      if(x.user) {
+        localStorage.setItem('user', x.user);
+        localStorage.setItem('acesstoken',b[0]);
+        this.loggedin = true;
+      }
+      return res;
+    })
   }
 
 }

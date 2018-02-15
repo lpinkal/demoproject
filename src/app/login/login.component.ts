@@ -11,6 +11,7 @@ import {AuthService} from "../auth.service";
 })
 export class LoginComponent implements OnInit {
   @Output() session:string;
+  log:boolean=true;
   constructor(private serverservice:ServerService,private router:Router,private authservice:AuthService,private auth:AuthService) { }
 
   ngOnInit() {
@@ -28,11 +29,13 @@ export class LoginComponent implements OnInit {
     }
         else{
           f.resetForm();
+          this.log=false;
           this.router.navigate(['login']);
         }
       },
       (err) => {
         console.log('err');
+        this.log=false;
         this.router.navigate(['login']);
       })
   }

@@ -13,8 +13,11 @@ import {HttpModule} from "@angular/http";
 import {AuthService} from "./auth.service";
 import { LogoutComponent } from './logout/logout.component';
 import { HomeComponent } from './home/home.component';
-
-
+import {RoutingModule} from "../../../test1/src/app/routing.module";
+import { StudentdetailsComponent } from './studentdetails/studentdetails.component';
+import { DisplaystudentComponent } from './displaystudent/displaystudent.component';
+import { ErrorpageComponent } from './errorpage/errorpage.component';
+import {AuthGuard} from "./auth-gaurd.service";
 
 @NgModule({
   declarations: [
@@ -23,7 +26,10 @@ import { HomeComponent } from './home/home.component';
     LoginComponent,
     ProfileComponent,
     LogoutComponent,
-    HomeComponent
+    HomeComponent,
+    StudentdetailsComponent,
+    DisplaystudentComponent,
+    ErrorpageComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +38,7 @@ import { HomeComponent } from './home/home.component';
     HttpModule,
     ReactiveFormsModule
   ],
-  providers: [ServerService,AuthService],
+  providers: [ServerService,AuthService,AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

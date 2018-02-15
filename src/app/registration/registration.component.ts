@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import {Router} from "@angular/router";
 import {ServerService} from "../server.service";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-registration',
@@ -10,23 +11,27 @@ import {ServerService} from "../server.service";
 })
 export class RegistrationComponent  {
   genders=['male','female'];
-  constructor(private router:Router,private serverservice:ServerService) { }
+  log:boolean=true;
+  constructor(private router:Router,private serverservice:ServerService,private auth:AuthService) { }
 
   onsave(f:NgForm) {
     console.log(f.value);
-    this.serverservice.storedata(f.value).subscribe(
+    this.auth.storedata(f.value).subscribe(
       (response: any) => {
-        console.log(JSON.parse(response._body).message);
-        let res = JSON.parse(response._body).message;
-        if (res === 'sucess') {
+        let token=localStorage.getItem('token');
+        console.log(token);
+        if (token) {
+          f.resetForm();
           this.router.navigate(['profile']);
         }
         else{
           f.reset();
+          this.log=false;
           this.router.navigate(['registration']);
         }
       },
       (err) => {
+        this.log=false;
         this.router.navigate(['registration']);
       }
     );

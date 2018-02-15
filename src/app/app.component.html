@@ -1,9 +1,11 @@
 <div class="container">
+
   <div class="row">
   <div class="col-12">
-  <ul class="navbar  bg-light nav-tabs ">
+  <ul class="nav navbar bg-light nav-tabs fixed-top" data-spy="affix" >
     <li role="presentation" routerLinkActive="active" *ngIf="!auth.loggedin"><a routerLink="registration" >registration</a></li>
     <li role="presentation" routerLinkActive="active" *ngIf="auth.loggedin"><a routerLink="profile">profile</a></li>
+    <li role="presentation" routerLinkActive="active" *ngIf="auth.loggedin"><a routerLink="student">Student</a></li>
     <li role="presentation" routerLinkActive="active" *ngIf="!auth.loggedin"><a routerLink="login">login</a></li>
     <li role="presentation" routerLinkActive="active" *ngIf="auth.loggedin"><a routerLink="logout" >logout</a></li>
     <li role="presentation" routerLinkActive="active">
@@ -17,10 +19,18 @@
     </ul>
   </div>
   </div>
-  <div class="row">
+
+
     <div class="col-2"></div>
     <div class="col-8">
+      <br>
+      <br>
+      <br>
       <router-outlet></router-outlet>
     </div>
-  </div>
+
+
+  <!--<div class="fixed-bottom">-->
+    <!--<p>header </p>-->
+  <!--</div>-->
 </div>

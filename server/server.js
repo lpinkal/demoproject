@@ -1,6 +1,7 @@
 const express=require('express');
 const cors = require('cors');
 const {Userdata}=require('./userschema');
+const {Studentdata}=require('./studentschema');
 const bodyParser=require('body-parser');
 const passport=require('passport');
 const Strategy=require('passport-local').Strategy;
@@ -9,18 +10,49 @@ const environment=require('./environment').module.environment;
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 var cookieParser=require('cookie-parser');
 const jwt=require('jsonwebtoken');
+const bcrypt=require('bcrypt');
+
+
+
 
 const app=express();
 app.use(bodyParser.json());
-app.use(cors());
+// app.use(cors());
+// app.use(cors({origin: [
+//     "http://localhost:4200"
+//   ], credentials: true,header:'Content-Type'}));
 
-
-
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', "http://localhost:4200");
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Expose-Headers',"content-type, cache,X-Custom-header,acesstoken");
+  res.header("AccessControlAllowMethods", "POST, GET, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers,Origin,Access-Control-Expose-Headers, X-Requested-With, Content-Type, Accept,acesstoken");
+  next();
+});
 
 app.use(session({secret:'secreat'}));
 
+
+app.get('/post',(req,res)=>{
+
+  req.session.name='1223456';
+  res.send('sucess')
+});
+
+app.get('/',(req,res)=>{
+  console.log(req.session);
+  res.send(req.session);
+});
+
+app.get('/logout',(req,res)=>{
+  req.session.destroy();
+  res.send(req.session);
+});
+
+
 app.use(passport.initialize());
-app.use(passport.session())
+app.use(passport.session());
 
 passport.serializeUser((user,cb)=>{
   console.log('ser');
@@ -33,6 +65,29 @@ passport.deserializeUser((user,cb)=>{
 });
 
 
+authchecker=(req,res,next)=>{
+
+
+  Userdata.findOne({email:req.body.user}).then((data)=>{
+    console.log(req.headers.acesstoken);
+    console.log(data);
+    console.log(data.acesstoken);
+    if(data.acesstoken===req.headers.acesstoken) {
+      console.log('12334');
+       next();
+
+    }else{
+      console.log('err');
+    }
+  });
+
+};
+
+
+
+app.get('/err',(req,res)=>{
+  res.send('errr');
+});
 // app.use(function(req,res,next){
 //   res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 //   console.log('session gtrg '+JSON.stringify(req.session.passport));
@@ -75,8 +130,10 @@ app.post('/login',urlencodedParser,passport.authenticate('local',{
 }),(req,res)=>{
   console.log('sucess user ');
   console.log('sucess user '+req.session.passport.user.email);
-  const token=jwt.sign(JSON.stringify(req.session.passport.user),environment.jsonsecret);
-  res.json({token:token,user:req.session.passport.user.email});
+  req.session.email=req.session.passport.user.email;
+  console.log(req.session);
+  res.set("acesstoken",req.session.passport.user.acesstoken);
+  res.json({user:req.session.passport.user.email});
 });
 
 
@@ -86,21 +143,28 @@ app.get('/err',(req,res)=>{
 });
 
 app.post('/post',(req,res)=>{
+console.log(req.headers);
 
-  // let name=req.body.value.name;
-  // let password=req.body.value.password;
-  // let email=req.body.value.email;
-  // console.log(name+' '+password+' '+email);
+
 
   var user1=new Userdata(req.body.value);
-  console.log(req.body);
+
+
+  console.log(user1);
   user1.save().then((resolve)=>{
-    console.log('sucess');
-    res.json({message: 'sucess'});
+    req.session.email=user1.email;
+    //console.log(user1);
+    //console.log('at'+user1.acesstoken);
+    res.set("acesstoken",user1.acesstoken);
+    console.log(res._headers);
+   // console.log("node responser: ",res);
+    res.send({user:user1.email});
   },(err)=>{
-    console.log('err');
+    console.log(err);
     res.json({message: 'err'});
-  })
+  });
+
+
 });
 
 // app.post('/login',(req,res)=>{
@@ -128,19 +192,20 @@ app.post('/post',(req,res)=>{
 //   })
 // });
 
-app.post('/profile',(req,res)=>{
-  //console.log(req.body.name);
+app.post('/profile',authchecker,(req,res)=>{
+ // console.log(req);
   Userdata.findOne({email:req.body.name},(err,users)=>{
     //console.log(users);
+
     res.json(users)
   });
 });
 
-app.post('/edit',(req,res)=>{
+app.post('/edit',authchecker,(req,res)=>{
   console.log('req');
   console.log(req.body.psw);
   console.log(req.body.user);
-
+  console.log(req.headers.acesstoken);
   Userdata.findOneAndUpdate({email:req.body.user},{$set:{password:req.body.psw}}).then((res)=>{
     console.log('res');
   },(err)=>{
@@ -150,7 +215,7 @@ res.json({"msg":'sucess'})
 
 });
 
-app.post('/delete',(req,res)=>{
+app.post('/delete',authchecker,(req,res)=>{
   console.log(req.body.user);
 
   Userdata.findOneAndRemove({email:req.body.user}).then((res)=>{
@@ -158,10 +223,67 @@ app.post('/delete',(req,res)=>{
   },()=>{
 
   });
-
-
   res.send(req.body);
-})
+});
+
+
+app.post('/studentpost',authchecker,(req,res)=>{
+  console.log(req.session);
+  var student1=new Studentdata(req.body.body);
+  student1.save().then((data)=>{
+    res.json({message: 'sucess'});
+  },(err)=>{
+    res.json({message: 'err'});
+  })
+
+});
+
+app.post('/displaystudent',authchecker,(req,res)=>{
+  Studentdata.find({}).then((students)=>{
+    //console.log(students);
+    res.json(students);
+  })
+});
+
+app.post('/deletestudent',authchecker,(req,res)=>{
+  console.log(req.body.email);
+  Studentdata.findOneAndRemove({email:req.body.email}).then((data)=>{
+    res.json({message: 'sucess'});
+  },(err)=>{
+    res.json({message: 'err'});
+  });
+});
+
+app.post('/updatestudent',authchecker,(req,res)=>{
+  Studentdata.findOne({email:req.body.email}).then((data)=>{
+    res.json(data);
+  })
+});
+
+app.post('/saveupdate',authchecker,(req,res)=>{
+  console.log(req.body);
+  let value=req.body.value;
+  Studentdata.findOneAndUpdate({email:req.body.email},{$set:{name:value.name,password:value.password}}).then((data)=>{
+    console.log(data);
+    res.json({message: 'sucess'});
+  })
+});
+
+app.post('/logout',authchecker,(req,res)=>{
+  req.session.destroy();
+  console.log(req.session);
+  res.json({message: 'sucess'});
+});
+
+
+app.post('/upload',urlencodedParser,(req,res)=>{
+  console.log(req);
+});
+
+
+
+
+
 
 app.listen(environment.port,()=>{
   console.log('app started on port '+environment.port)

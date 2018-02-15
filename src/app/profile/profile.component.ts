@@ -1,7 +1,7 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {ServerService} from "../server.service";
 import {AuthService} from "../auth.service";
-import {tokenize} from "@angular/compiler/src/ml_parser/lexer";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-profile',
@@ -9,20 +9,16 @@ import {tokenize} from "@angular/compiler/src/ml_parser/lexer";
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  constructor(private serverservice:ServerService,private el:ElementRef) { }
+  constructor(private serverservice:ServerService,private el:ElementRef,private auth:AuthService,private router:Router) { }
   username='';
   email='';
   psw='';
   gender='';
   editmode=false;
-  token='';
   user='';
 
   ngOnInit() {
-     this.token=localStorage.getItem('token');
     this.user=localStorage.getItem('user');
-    console.log('token');
-    console.log(this.token);
     console.log('user');
     console.log(this.user);
     this.serverservice.display(this.user).subscribe((res:any)=>{
@@ -49,6 +45,7 @@ export class ProfileComponent implements OnInit {
     console.log('save');
     let q=this.el.nativeElement.querySelector('#npsw').value;
     this.serverservice.editpsw(q).subscribe((res:any)=>{
+      this.psw=q;
       console.log(res);
     });
 
@@ -61,8 +58,11 @@ export class ProfileComponent implements OnInit {
 
     this.serverservice.delete(this.user).subscribe((res:any)=>{
       console.log(res);
+      localStorage.removeItem('acesstoken');
+      localStorage.removeItem('user');
+      this.auth.loggedin=false;
+      this.router.navigate(['/home']);
     });
-
   }
 
 }

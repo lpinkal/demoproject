@@ -14,10 +14,10 @@
 
         <div class="form-group">
         <button class="btn btn-primary" type="submit" [disabled]="!f.valid">Submit</button>
-        <button class="btn btn-primary" type="button" (click)="googlelogin1(f)">google</button>
+        <!--<button class="btn btn-primary" type="button" (click)="googlelogin1(f)">google</button>-->
         </div>
       </form>
-
+      <div class="label-danger" *ngIf="!log">login failed</div>
       <div role="presentation" routerLinkActive="active" ><a routerLink="/registration">Registration</a></div>
     </div>
     <div class="col-sm-3"></div>

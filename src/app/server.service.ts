@@ -1,22 +1,26 @@
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
+import {Http,Headers} from "@angular/http";
 import {environment} from "./environment";
 import 'rxjs/Rx';
 @Injectable()
 export class ServerService {
-
   constructor(private http: Http) {
   }
 
   storedata(value: any) {
     console.log('storedata');
-    return this.http.post(environment.baseURL+'post', {value});
+    return this.http.post(environment.baseURL+'post', {value},{withCredentials: true}).map(
+      (response:any)=>{
+        console.log("Response object register : ",response);
+        return response;
+      }
+    );
   }
   login(body){
     console.log('login');
-    return this.http.post(environment.baseURL+'login',{"username":body.username,"password":body.password}).map(
+    return this.http.post(environment.baseURL+'login',{"username":body.username,"password":body.password},{withCredentials: true}).map(
       (response:any)=>{
-        return response.json();
+        return response;
       }
     );
     // return this.http.get('http://localhost:3000/login').map(
@@ -45,7 +49,8 @@ export class ServerService {
   }
 
   display(name){
-    return this.http.post(environment.baseURL+'profile',{name}).map(
+    let headers=new Headers({'acesstoken':localStorage.getItem('acesstoken')});
+    return this.http.post(environment.baseURL+'profile',{name:name,user:name},{withCredentials: true,headers:headers}).map(
       (response:any)=>{
         return response.json();
       }
@@ -54,18 +59,77 @@ export class ServerService {
 
   editpsw(psw){
     console.log('editsave service');
+    let headers=new Headers({'acesstoken':localStorage.getItem('acesstoken')});
     const user=localStorage.getItem('user');
-    return this.http.post(environment.baseURL+'edit',{psw:psw,user:user}).map(
+    return this.http.post(environment.baseURL+'edit',{psw:psw,user:user},{withCredentials: true,headers:headers}).map(
       (response:any)=>{
         return response.json();
       }
     );
   }
   delete(user){
-        return this.http.post(environment.baseURL+'delete',{user:user}).map(
+    let headers=new Headers({'acesstoken':localStorage.getItem('acesstoken')});
+        return this.http.post(environment.baseURL+'delete',{user:user},{withCredentials: true,headers:headers}).map(
           (res:any)=>{
             return res;
           }
         )
+  }
+
+  poststudent(body){
+    let headers=new Headers({'acesstoken':localStorage.getItem('acesstoken')});
+    const user=localStorage.getItem('user');
+    return this.http.post(environment.baseURL+'studentpost',{body:body,user:user},{withCredentials: true,headers:headers}).map(
+      (res:any)=>{
+        return res.json();
+      }
+    )
+  }
+
+  displaystudent(){
+    let headers=new Headers({'acesstoken':localStorage.getItem('acesstoken')});
+    const user=localStorage.getItem('user');
+    return this.http.post(environment.baseURL+'displaystudent',{user:user},{withCredentials: true,headers:headers}).map((res)=>{
+      return res.json();
+    })
+  }
+
+  deletestudent(email){
+    let headers=new Headers({'acesstoken':localStorage.getItem('acesstoken')});
+    const user=localStorage.getItem('user');
+    return this.http.post(environment.baseURL+'deletestudent',{email:email,user:user},{withCredentials: true,headers:headers}).map((res)=>{
+      return res.json();
+    })
+  }
+
+  updatestudent(email){
+    let headers=new Headers({'acesstoken':localStorage.getItem('acesstoken')});
+    const user=localStorage.getItem('user');
+    return this.http.post(environment.baseURL+'updatestudent',{email:email,user:user},{withCredentials: true,headers:headers}).map((res)=>{
+      return res.json();
+    })
+  }
+  saveupdate(body,email){
+    let headers=new Headers({'acesstoken':localStorage.getItem('acesstoken')});
+    const user=localStorage.getItem('user');
+    return this.http.post(environment.baseURL+'saveupdate',{value:body,email:email,user:user},{withCredentials: true,headers:headers}).map((res)=>{
+      return res.json();
+    })
+  }
+
+  logout(){
+    let headers=new Headers({'acesstoken':localStorage.getItem('acesstoken')});
+    const user=localStorage.getItem('user');
+    return this.http.post(environment.baseURL+'logout',{user:user},{withCredentials: true,headers:headers}).map((res)=>{
+      return res.json();
+    })
+  }
+
+  upload(formdata){
+    console.log(formdata);
+    let headers=new Headers({'acesstoken':localStorage.getItem('acesstoken')});
+    return this.http.post(environment.baseURL+'upload',formdata,{withCredentials:true,headers:headers}).map((res)=>{
+      return res.json();
+    })
   }
 }
