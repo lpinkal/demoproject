@@ -1,0 +1,19 @@
+.custom-spinner .loading-text {
+  top: 67%;
+}
+
+.custom-spinner .black-overlay {
+  background-color: #ffffff;
+}
+
+.custom-spinner .la-ball-clip-rotate.la-3x {
+  color: #000000;
+}
+
+.custom-spinner p {
+  color: #000000;
+}
+
+.custom-spinner .black-overlay {
+  position: fixed;
+}
